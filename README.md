@@ -1,6 +1,6 @@
 # Fact Knowledge Layer: Cross-Document Evidence Grounding & Reconciliation
 
-> **Superjoin Engineering Intern Hiring Assignment (VIT 2026)**  
+> **Superjoin Engineering Intern Hiring Assignment**  
 > An open-ended, production-grade system that extracts meaningful facts from unstructured documents, grounds every claim in source PDF evidence (exact page numbers and verbatim quotes), and resolves cross-document relationships into **Corroborations**, **Apparent Contradictions** (reconciled by context), and **Genuine Contradictions**.
 
 ---
