@@ -76,6 +76,14 @@ pytest -v
 
 ## Video Demo
 
+<p align="center">
+  <a href="[YOUR_EXTERNAL_VIDEO_URL](https://drive.google.com/file/d/1jcMpm0L3Q9P2kAAJ_J2hSIn4s6rzivoB/view?usp=sharing)">
+    <img src="https://unsplash.com" alt="Watch Video Demo" width="600"/>
+    <br>
+    ▶️ <b>Click here to watch the full video demo</b>
+  </a>
+</p>
+
 
 ---
 
