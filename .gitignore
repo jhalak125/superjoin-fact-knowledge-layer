@@ -1,0 +1,25 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment and secrets
+.env
+.env.*
+*.key
+
+# Uploads and temporary files
+uploads/*
+!uploads/.gitkeep
+
+# macOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
