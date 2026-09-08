@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fact Knowledge Layer | Cross-Document Verification & Reconciliation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Fact Knowledge Layer</h1>
+          <p class="brand-subtitle">Cross-Document Evidence Grounding, Context Disambiguation & Reconciliation</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Dataset Switcher -->
+        <div class="dataset-switcher">
+          <label for="datasetSelect">Dataset:</label>
+          <select id="datasetSelect" onchange="switchDataset(this.value)">
+            <option value="delhivery">Delhivery Starter Set (3 PDFs)</option>
+            <option value="india-macroeconomy">India Macroeconomy (3 PDFs)</option>
+            <option value="all">Combined Knowledge Layer (6 PDFs)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="openUploadModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Upload New PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Summary Statistics Ribbon -->
+  <section class="stats-ribbon">
+    <div class="stat-card">
+      <div class="stat-label">Indexed Documents</div>
+      <div class="stat-value" id="statDocs">-</div>
+      <div class="stat-sub">Curated filings & reports</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Grounded Facts</div>
+      <div class="stat-value" id="statFacts">-</div>
+      <div class="stat-sub">Strict page & quote citations</div>
+    </div>
+    <div class="stat-card border-emerald">
+      <div class="stat-label">Corroborated</div>
+      <div class="stat-value text-emerald" id="statCorrob">-</div>
+      <div class="stat-sub">Cross-filing verification</div>
+    </div>
+    <div class="stat-card border-amber">
+      <div class="stat-label">Apparent Contradictions</div>
+      <div class="stat-value text-amber" id="statApparent">-</div>
+      <div class="stat-sub">Reconciled by Time / Scope / Units</div>
+    </div>
+    <div class="stat-card border-rose">
+      <div class="stat-label">Genuine Contradictions</div>
+      <div class="stat-value text-rose" id="statGenuine">-</div>
+      <div class="stat-sub">Unreconciled factual conflicts</div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs-container">
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="setTab('showcase')">
+        <span class="tab-badge">Required</span> Showcase 4 Cases
+      </button>
+      <button class="tab-btn" onclick="setTab('relationships')">
+        Cross-Document Relationships
+      </button>
+      <button class="tab-btn" onclick="setTab('explorer')">
+        Fact Knowledge Explorer
+      </button>
+      <button class="tab-btn" onclick="setTab('documents')">
+        Source Documents & Ingestion
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="main-content">
+
+    <!-- TAB 1: SHOWCASE 4 CASES -->
+    <div id="tab-showcase" class="tab-pane active">
+      <div class="pane-header">
+        <div>
+          <h2>Evaluation Showcase: The Four Core Cases</h2>
+          <p class="pane-sub">
+            Demonstrating how the Fact Knowledge Layer handles corroboration, genuine contradictions, 
+            contextual reconciliation, and extraction/reasoning failure recovery.
+          </p>
+        </div>
+      </div>
+
+      <div class="cases-grid" id="casesContainer">
+        <!-- Rendered via JavaScript -->
+        <div class="loading-state">Loading evaluation cases...</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: CROSS-DOCUMENT RELATIONSHIPS -->
+    <div id="tab-relationships" class="tab-pane">
+      <div class="pane-header">
+        <div>
+          <h2>Cross-Document Relationships & Reasoning Graph</h2>
+          <p class="pane-sub">
+            Automated pair-wise fact comparison evaluating contextual compatibility and emitting natural language reasoning.
+          </p>
+        </div>
+        <div class="filter-controls">
+          <select id="relFilterType" onchange="filterRelationships()">
+            <option value="ALL">All Relationship Types</option>
+            <option value="CORROBORATED">Corroborated Only</option>
+            <option value="APPARENT_CONTRADICTION">Apparent Contradictions Only</option>
+            <option value="GENUINE_CONTRADICTION">Genuine Contradictions Only</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="relationshipsContainer" class="relationships-list">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+
+    <!-- TAB 3: FACT KNOWLEDGE EXPLORER -->
+    <div id="tab-explorer" class="tab-pane">
+      <div class="pane-header">
+        <div>
+          <h2>Grounded Fact Knowledge Catalog</h2>
+          <p class="pane-sub">
+            All atomic facts extracted across disclosures with explicit page grounding, verbatim quotes, and context schema.
+          </p>
+        </div>
+        <div class="filter-controls">
+          <input type="text" id="factSearchInput" placeholder="Search by entity, attribute, or value..." oninput="filterFacts()">
+          <select id="factCategoryFilter" onchange="filterFacts()">
+            <option value="ALL">All Categories</option>
+            <option value="Financial">Financial</option>
+            <option value="Operational">Operational</option>
+            <option value="Governance">Governance</option>
+            <option value="Macroeconomic">Macroeconomic</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="factsContainer" class="facts-grid">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+
+    <!-- TAB 4: SOURCE DOCUMENTS & INGESTION -->
+    <div id="tab-documents" class="tab-pane">
+      <div class="pane-header">
+        <div>
+          <h2>Source Documents & Incremental Ingestion</h2>
+          <p class="pane-sub">
+            Supports incremental document ingestion: new PDFs are indexed and reconciled against existing knowledge without full rebuilds.
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="openUploadModal()">Upload New PDF</button>
+      </div>
+
+      <div class="documents-grid" id="documentsContainer">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Upload PDF for Incremental Ingestion</h3>
+        <button class="modal-close" onclick="closeUploadModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Upload any PDF document. The system will extract facts, ground them to exact pages, 
+          and incrementally reconcile them against the existing knowledge layer.
+        </p>
+
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="15" y2="15"></line>
+          </svg>
+          <div class="dropzone-text">Click to select PDF or drag and drop here</div>
+          <div class="dropzone-sub">Accepts arbitrary PDFs (.pdf)</div>
+          <input type="file" id="fileInput" accept=".pdf" style="display: none;" onchange="handleFileSelected(this.files[0])">
+        </div>
+
+        <div id="selectedFileInfo" class="selected-file-info" style="display: none;">
+          <span class="file-name" id="selectedFileName"></span>
+          <span class="file-size" id="selectedFileSize"></span>
+        </div>
+
+        <div id="uploadStatus" class="upload-status" style="display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUploadModal()">Cancel</button>
+        <button class="btn btn-primary" id="uploadSubmitBtn" onclick="submitUpload()" disabled>Upload & Index Incrementally</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evidence Detail Modal -->
+  <div id="evidenceModal" class="modal-backdrop">
+    <div class="modal-card evidence-modal-card">
+      <div class="modal-header">
+        <h3>Source Document Evidence</h3>
+        <button class="modal-close" onclick="closeEvidenceModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="evidenceModalContent">
+        <!-- Rendered via JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEvidenceModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
