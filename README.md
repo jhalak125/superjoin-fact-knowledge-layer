@@ -10,10 +10,8 @@
 2. [Setup and Run Instructions](#setup-and-run-instructions)
 3. [Video Demo](#video-demo)
 4. [Approach & Architecture](#approach--architecture)
-5. [The Four Required Cases](#the-four-required-cases)
-6. [Brownie Points Implemented](#brownie-points-implemented)
-7. [Limitations and Next Steps](#limitations-and-next-steps)
-8. [Additional Notes](#additional-notes)
+5. [Limitations and Next Steps](#limitations-and-next-steps)
+6. [Additional Notes](#additional-notes)
 
 ---
 
