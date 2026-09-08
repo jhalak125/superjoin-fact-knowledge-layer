@@ -78,16 +78,6 @@ pytest -v
 
 ## Video Demo
 
-- **Video Demo Link**: `[Insert YouTube / Loom / Google Drive Link Here]` *(Max duration: 3 minutes)*
-
-### Video Walkthrough Script & Timestamps (for Evaluators / Recording)
-| Time | Segment | Screen Action | Narration Summary |
-|---|---|---|---|
-| **0:00 - 0:35** | **System Overview & Dashboard** | Show `http://localhost:8000` dashboard ribbon and dataset switcher | Walk through the metrics (Documents, Facts, Corroborations, Apparent Contradictions, Genuine Contradictions) across the Delhivery and India Macro datasets. |
-| **0:35 - 1:15** | **Case 1 (Corroboration) & Case 2 (Genuine Contradiction)** | Open **Showcase 4 Cases** tab; inspect Case 1 & Case 2 cards | Show how Automated Sort Centers (29) and Gateways (111) corroborate between Annual Report P. 22 and Earnings Presentation P. 8. Show Case 2: Gurugram Headquarters Postal Code contradiction (PIN 122002 vs 122001) for the same building. |
-| **1:15 - 1:55** | **Case 3 (Apparent Contradiction) & Case 4 (Failure Recovery)** | Inspect Case 3 & Case 4 cards | Demonstrate how 98,135 workforce strength vs 63,713 core team is reconciled by partner agent scope (63,713 + 34,422 = 98,135). Explain Case 4: Multicolumn table bleed and the temporal reconciliation gate. |
-| **1:55 - 2:40** | **Incremental PDF Upload & Ingestion** | Click "Upload New PDF", drop an arbitrary PDF, watch instant indexing | Show incremental ingestion: facts are extracted and reconciled against existing documents in real time without rebuilding prior knowledge. |
-| **2:40 - 3:00** | **API & Conclusion** | Show `/docs` Swagger UI and test suite (`pytest`) | Highlight the REST endpoints (`/api/documents/upload`, `/api/cases`, `/api/relationships`) and modular architecture. |
 
 ---
 
@@ -145,68 +135,6 @@ When comparing facts from Document A and Document B:
    - If operational boundaries differ (e.g., Total Workforce vs Core Team), it flags `ContextFactor.SCOPE`.
    - If context matches and normalized values match within rounding tolerance $\to$ `CORROBORATED`.
    - If context matches but values conflict without explanation $\to$ `GENUINE_CONTRADICTION`.
-
----
-
-## The Four Required Cases
-
-The assignment specifies that the system must demonstrate four distinct cases grounded in the starter datasets:
-
-### Case 1: A Fact Corroborated Across Documents
-- **Title**: Infrastructure Scale: Automated Sortation Centres (29) and Gateways (111)
-- **Source A**: *02-delhivery-annual-report-fy24-excerpt.pdf*, Page 22 (Directors' Report)  
-  *Quote*: `"Your Company operated 29 fully and semi automated sortation centres and 111 gateways across India as of March 31, 2024."`
-- **Source B**: *03-delhivery-q4-fy24-earnings-presentation.pdf*, Page 8 (Key Operating Metrics Table)  
-  *Quote*: `"Gateways: 111 | Automated sort centers: 29"` (as of Q4 FY24)
-- **System Reasoning**: The system evaluated disclosures across narrative statutory text and quarterly investor slides. Despite differing presentation media (running text vs. multi-column presentation table) and slight terminology variations ("sortation centres" vs. "sort centers"), both sources corroborate that Delhivery operates exactly 29 automated hubs and 111 gateways as of the March 31, 2024 cutoff date.
-
----
-
-### Case 2: A Genuine or Likely Contradiction
-- **Title**: Official Corporate Headquarters Postal Code: PIN 122002 vs PIN 122001
-- **Source A**: *01-delhivery-prospectus-2022-excerpt.pdf*, Page 1 (Corporate Information Cover)  
-  *Quote*: `"CORPORATE OFFICE: Plot 5, Sector 44, Gurugram 122002 Haryana, India"`
-- **Source B**: *02-delhivery-annual-report-fy24-excerpt.pdf*, Page 51 (BRSR General Disclosures)  
-  *Quote*: `"Corporate address: Plot No. 5, Sector 44, Gurugram, Haryana 122001"`
-- **System Reasoning**: Both filings declare the official corporate headquarters at Plot 5, Sector 44, Gurugram, Haryana for Delhivery Limited. However, the Prospectus records postal index PIN `122002`, while the subsequent Annual Report records PIN `122001`. Because both disclosures cite the exact same physical building without relocation, this represents an unresolved, genuine clerical contradiction in statutory filings.
-
----
-
-### Case 3: An Apparent Contradiction Explained by Context
-- **Title**: Workforce Size: 98,135 vs 63,713 Reconciled by Operational Scope
-- **Source A**: *02-delhivery-annual-report-fy24-excerpt.pdf*, Page 2 (Highlights)  
-  *Quote*: `"98,135(1,5) Workforce strength | (1) As of March 31, 2024 (5) Includes permanent employees, contractual workers and last mile deliver partner agents"`
-- **Source B**: *03-delhivery-q4-fy24-earnings-presentation.pdf*, Page 8 (Operating Metrics)  
-  *Quote*: `"Team size(4): 63,713 | Partner agents(5): 34,422"`  
-  *(Footnote 4: permanent + contractual excluding partner agents; Footnote 5: count of last-mile partner agents)*
-- **System Reasoning**: Superficially, comparing 98,135 to 63,713 suggests a massive contradiction of over 34,400 employees. However, contextual extraction of the footnotes provides the exact mathematical reconciliation:
-  $$\text{Core Team (63,713)} + \text{Partner Agents (34,422)} = \text{Total Workforce (98,135)}$$
-  The Annual Report combines all three labor tiers into "Workforce strength", while the Earnings Presentation disaggregates core team from partner delivery contractors.
-
----
-
-### Case 4: An Extraction or Reasoning Failure Found and How We Handled It
-- **Title**: Multi-Column PDF Table Bleed & Temporal False-Contradiction Trap
-- **Failure Description**:
-  1. *PDF Table Column Misalignment*: In financial statements (e.g. Annual Report P. 22), Standalone (`₹74,540.82M`) and Consolidated (`₹81,415.38M`) figures sit in adjacent columns. Standard text scrapers stream lines linearly, merging adjacent cells and causing extractors to misattribute Standalone revenue to the Consolidated entity.
-  2. *Naive Temporal False-Positive*: Comparing Prospectus FY21 revenue (`₹36,465.27M`) with Annual Report FY24 revenue (`₹81,415.38M`), a naive system without temporal awareness flagged a "Critical Contradiction" for Delhivery's revenue.
-- **How We Handled & Improved It**:
-  1. *Spatial Table Parsing*: We implemented spatial column-header bounding heuristics in `PdfProcessor` that preserve column boundaries and bind values to their explicit vertical headers (`Standalone` vs `Consolidated`).
-  2. *Context Compatibility Gate*: In `FactReconciler.compare_facts`, we established a rule: before comparing numerical values, the engine verifies whether `temporal_period` matches. If temporal bounds differ, the discrepancy is classified as `APPARENT_CONTRADICTION` (Context: Temporal Progression), completely eliminating temporal false positives.
-  3. *Unit Normalizer*: Automated unit conversion between Millions and Crores ($1 \text{ Cr} = 10 \text{ M}$) ensures that `₹81,415.38 M` (~`₹8,141.54 Cr`) and `₹8,142 Cr` corroborate within standard rounding limits.
-
----
-
-## Brownie Points Implemented
-
-1. **Large PDFs Without Significant Performance Issues**:
-   - The system efficiently ingests the full 100-page starter PDFs (`01-delhivery-prospectus`, `02-delhivery-annual-report`, etc.) in seconds using PyMuPDF page-streaming rather than loading uncompressed gigabytes into memory.
-2. **Incremental Ingestion Without Rebuilding Knowledge**:
-   - When a new document is uploaded via `/api/documents/upload` or the UI, the engine only extracts facts from the incoming document and executes an $O(M \cdot N)$ comparison against existing facts, leaving prior document extractions and internal relationships intact.
-3. **Multi-Dataset Switcher**:
-   - Provides one-click toggling between the **Delhivery Corporate Dataset** and the **India Macroeconomy Dataset** (Government Economic Survey vs. RBI vs. IMF).
-4. **Zero-Dependency Reproducibility**:
-   - Ships with bundled extractions so anyone can evaluate the system immediately without signing up for paid LLM accounts.
 
 ---
 
